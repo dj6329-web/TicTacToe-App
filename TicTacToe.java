@@ -1,37 +1,41 @@
 import java.util.Random;
+import java.util.Scanner; // Added for UC3
 
 public class TicTacToe {
-    // UC1 Variables
     static char[][] board = new char[3][3];
-
-    // UC2 Variables: Game State
     static boolean isHumanTurn;
     static char humanSymbol;
     static char computerSymbol;
+    
+    // Scanner is defined here so all methods can use it
+    static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) {
-        // UC1 Features
         createBoard();
-        
-        // UC2 Features
         tossAndAssignSymbols();
         displayTossResult();
         
-        // Final Display of Empty Board from UC1
+        // UC3 Feature: Getting and showing the input
+        int slot = getUserSlot();
+        System.out.println("Slot entered: " + slot);
+        
         displayBoard();
     }
 
-    // --- UC2 Methods ---
-
     /**
-     * Uses random logic (0 or 1) to decide who plays first.
-     * Assigns 'X' to the starter and 'O' to the second player.
+     * UC3: Reads an integer slot value from the user.
+     * Future UCs will handle validation (checking if 1-9 or if occupied).
      */
+    public static int getUserSlot() {
+        System.out.print("Enter a slot number (1-9): ");
+        int slot = sc.nextInt();
+        return slot;
+    }
+
+    // --- Previous UC Methods (Keep these) ---
     public static void tossAndAssignSymbols() {
         Random random = new Random();
-        int toss = random.nextInt(2); // Generates 0 or 1
-
-        if (toss == 0) {
+        if (random.nextInt(2) == 0) {
             isHumanTurn = true;
             humanSymbol = 'X';
             computerSymbol = 'O';
@@ -42,27 +46,13 @@ public class TicTacToe {
         }
     }
 
-    /**
-     * Prints the result of the toss to the console.
-     */
     public static void displayTossResult() {
-        System.out.println("Toss Result:");
-        if (isHumanTurn) {
-            System.out.println("Human starts first with symbol: " + humanSymbol);
-            System.out.println("Computer symbol: " + computerSymbol);
-        } else {
-            System.out.println("Computer starts first with symbol: " + computerSymbol);
-            System.out.println("Human symbol: " + humanSymbol);
-        }
-        System.out.println();
+        System.out.println("Toss Result: " + (isHumanTurn ? "Human" : "Computer") + " starts first.");
     }
 
-    // --- UC1 Methods (Keep these below) ---
     public static void createBoard() {
         for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                board[i][j] = '-';
-            }
+            for (int j = 0; j < 3; j++) board[i][j] = '-';
         }
     }
 
