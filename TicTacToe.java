@@ -1,53 +1,44 @@
 import java.util.Random;
-import java.util.Scanner; // Added for UC3
+import java.util.Scanner;
 
 public class TicTacToe {
     static char[][] board = new char[3][3];
-    static boolean isHumanTurn;
-    static char humanSymbol;
-    static char computerSymbol;
-    
-    // Scanner is defined here so all methods can use it
     static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) {
         createBoard();
-        tossAndAssignSymbols();
-        displayTossResult();
         
-        // UC3 Feature: Getting and showing the input
+        // UC3: Get Input
         int slot = getUserSlot();
+        
+        // UC4: Convert and Display Mapping
+        int row = getRowFromSlot(slot);
+        int col = getColFromSlot(slot);
+        
         System.out.println("Slot entered: " + slot);
+        System.out.println("Mapped to Row: " + row + ", Column: " + col);
         
         displayBoard();
     }
 
     /**
-     * UC3: Reads an integer slot value from the user.
-     * Future UCs will handle validation (checking if 1-9 or if occupied).
+     * UC4: Converts slot number (1-9) into row index (0-2)
      */
+    static int getRowFromSlot(int slot) {
+        return (slot - 1) / 3;
+    }
+
+    /**
+     * UC4: Converts slot number (1-9) into column index (0-2)
+     */
+    static int getColFromSlot(int slot) {
+        return (slot - 1) % 3;
+    }
+
+    // --- Previous Methods ---
     public static int getUserSlot() {
         System.out.print("Enter a slot number (1-9): ");
-        int slot = sc.nextInt();
-        return slot;
-    }
-
-    // --- Previous UC Methods (Keep these) ---
-    public static void tossAndAssignSymbols() {
-        Random random = new Random();
-        if (random.nextInt(2) == 0) {
-            isHumanTurn = true;
-            humanSymbol = 'X';
-            computerSymbol = 'O';
-        } else {
-            isHumanTurn = false;
-            humanSymbol = 'O';
-            computerSymbol = 'X';
-        }
-    }
-
-    public static void displayTossResult() {
-        System.out.println("Toss Result: " + (isHumanTurn ? "Human" : "Computer") + " starts first.");
+        return sc.nextInt();
     }
 
     public static void createBoard() {
