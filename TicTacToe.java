@@ -8,45 +8,49 @@ public class TicTacToe {
     public static void main(String[] args) {
         createBoard();
         
-        // UC3: Get Input
+        // UC3 & UC4: Get and Convert Input
         int slot = getUserSlot();
-        
-        // UC4: Convert and Display Mapping
         int row = getRowFromSlot(slot);
         int col = getColFromSlot(slot);
         
-        System.out.println("Slot entered: " + slot);
-        System.out.println("Mapped to Row: " + row + ", Column: " + col);
+        // UC5: Validation Logic
+        if (isValidMove(row, col)) {
+            System.out.println("Move is valid!");
+            // In UC6, we will actually place the mark here
+        } else {
+            System.out.println("Invalid move! Position already taken or out of bounds.");
+        }
         
         displayBoard();
     }
 
     /**
-     * UC4: Converts slot number (1-9) into row index (0-2)
+     * UC5: Checks if the move is within bounds and the cell is empty.
+     * Returns true if valid, false otherwise.
      */
-    static int getRowFromSlot(int slot) {
-        return (slot - 1) / 3;
+    static boolean isValidMove(int row, int col) {
+        // Check boundary (0-2)
+        if (row >= 0 && row < 3 && col >= 0 && col < 3) {
+            // Check if cell is empty
+            return board[row][col] == '-';
+        }
+        return false;
     }
 
-    /**
-     * UC4: Converts slot number (1-9) into column index (0-2)
-     */
-    static int getColFromSlot(int slot) {
-        return (slot - 1) % 3;
-    }
+    // --- Conversion Methods (UC4) ---
+    static int getRowFromSlot(int slot) { return (slot - 1) / 3; }
+    static int getColFromSlot(int slot) { return (slot - 1) % 3; }
 
     // --- Previous Methods ---
     public static int getUserSlot() {
-        System.out.print("Enter a slot number (1-9): ");
+        System.out.print("Enter slot (1-9): ");
         return sc.nextInt();
     }
-
     public static void createBoard() {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) board[i][j] = '-';
         }
     }
-
     public static void displayBoard() {
         for (int i = 0; i < 3; i++) {
             System.out.println(" " + board[i][0] + " | " + board[i][1] + " | " + board[i][2]);
