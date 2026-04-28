@@ -9,14 +9,13 @@ public class TicTacToe {
     static boolean isHumanTurn;
     static char humanSymbol;
     static char computerSymbol;
-    static boolean gameOver = false; // UC8: Game state flag
+    static boolean gameOver = false;
 
     public static void main(String[] args) {
         createBoard();
         tossAndAssignSymbols();
         displayBoard();
 
-        // UC8: Continuous Game Loop
         while (!gameOver) {
             if (isHumanTurn) {
                 System.out.println("\n--- Your Turn (" + humanSymbol + ") ---");
@@ -28,51 +27,66 @@ public class TicTacToe {
 
             displayBoard();
 
-            // Check for Win/Draw logic would go here
-            // For now, we manually switch turns
-            isHumanTurn = !isHumanTurn; 
-
-            // Temporary safety break to prevent infinite loops during testing
-            // Remove this once you implement win/draw detection
-            if (isBoardFull()) {
-                System.out.println("Board is full! Game Over.");
+            // UC9: Check for Winner or Draw
+            char result = checkWinner();
+            if (result != '-') {
+                if (result == 'D') {
+                    System.out.println("It's a Draw!");
+                } else {
+                    System.out.println((result == humanSymbol ? "You" : "Computer") + " Wins!");
+                }
                 gameOver = true;
+            } else {
+                isHumanTurn = !isHumanTurn;
             }
         }
     }
 
     /**
-     * UC8: Helper to handle the human's input and validation cycle
+     * UC9: Checks rows, columns, and diagonals for a winner.
+     * Returns the winning character, 'D' for draw, or '-' to continue.
      */
+    static char checkWinner() {
+        // Check Rows and Columns
+        for (int i = 0; i < 3; i++) {
+            if (board[i][0] != '-' && board[i][0] == board[i][1] && board[i][1] == board[i][2]) 
+                return board[i][0];
+            if (board[0][i] != '-' && board[0][i] == board[1][i] && board[1][i] == board[2][i]) 
+                return board[0][i];
+        }
+
+        // Check Diagonals
+        if (board[0][0] != '-' && board[0][0] == board[1][1] && board[1][1] == board[2][2]) 
+            return board[0][0];
+        if (board[0][2] != '-' && board[0][2] == board[1][1] && board[1][1] == board[2][0]) 
+            return board[0][2];
+
+        // Check for Draw
+        if (isBoardFull()) return 'D';
+
+        return '-';
+    }
+
+    // --- REUSED METHODS ---
+    static boolean isBoardFull() {
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+                if (board[i][j] == '-') return false;
+        return true;
+    }
+
     static void handleHumanTurn() {
         boolean valid = false;
         while (!valid) {
             int slot = getUserSlot();
-            int row = getRowFromSlot(slot);
-            int col = getColFromSlot(slot);
-
-            if (isValidMove(row, col)) {
-                placeMove(row, col, humanSymbol);
+            int r = getRowFromSlot(slot), c = getColFromSlot(slot);
+            if (isValidMove(r, c)) {
+                placeMove(r, c, humanSymbol);
                 valid = true;
-            } else {
-                System.out.println("Invalid move! Try again.");
-            }
+            } else System.out.println("Invalid! Try again.");
         }
     }
 
-    /**
-     * UC8: Temporary check to stop the loop when no spots remain
-     */
-    static boolean isBoardFull() {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (board[i][j] == '-') return false;
-            }
-        }
-        return true;
-    }
-
-    // --- REUSED METHODS FROM PREVIOUS UCs ---
     static void computerMove() {
         boolean movePlaced = false;
         while (!movePlaced) {
@@ -101,6 +115,5 @@ public class TicTacToe {
         isHumanTurn = random.nextBoolean();
         humanSymbol = isHumanTurn ? 'X' : 'O';
         computerSymbol = (humanSymbol == 'X') ? 'O' : 'X';
-        System.out.println("Toss result: " + (isHumanTurn ? "Human" : "Computer") + " starts first.");
     }
 }
